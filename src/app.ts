@@ -5,9 +5,16 @@ import { Node } from "./graphs/node";
 import { Offsets } from "./graphs/offsets";
 import { ConsolePrinter } from "./output/consolePrinter";
 
-let x = new Node(new Content("Title", "Text"));
+let x = new Node(
+  new Content(
+    "Ромео и Джульетта",
+    "Достойно ли смиряться под ударами судьбы, иль надо оказать сопротивленье",
+    "У. Шекспир",
+    new Date("1970-01-01"),
+  ),
+);
 x.offsets = new Offsets(1, 2);
-x.dimensions = new Dimensions(4, 12);
+x.dimensions = new Dimensions(6, 12);
 
 let y = new Node(new Content("Title 2", "Text 2"));
 y.dimensions = new Dimensions(1, 2);
