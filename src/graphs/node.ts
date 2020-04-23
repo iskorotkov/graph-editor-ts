@@ -1,7 +1,7 @@
 import {Offsets} from './offsets'
 import {Dimensions} from './dimensions'
 import {Content} from './content'
-import {Point} from '../canvas/point'
+import {Position} from './position'
 
 export class Node {
     constructor(public content: Content,
@@ -9,32 +9,32 @@ export class Node {
                 public dimensions: Dimensions = new Dimensions()) {
     }
 
-    overlaps(point: Point): boolean {
-        return point.x >= this.left && point.x <= this.right
-            && point.y >= this.top && point.y <= this.bottom
+    overlaps(point: Position): boolean {
+        return point.column >= this.left && point.column <= this.right
+            && point.line >= this.top && point.line <= this.bottom
     }
 
-    onEdge(point: Point): boolean {
-        let onVerticalEdges = (point.x == this.left || point.x == this.right)
-            && point.y >= this.top && point.y <= this.bottom
-        let onHorizontalEdges = (point.y == this.top || point.y == this.bottom)
-            && point.x >= this.left && point.x <= this.right
+    onEdge(point: Position): boolean {
+        let onVerticalEdges = (point.column == this.left || point.column == this.right)
+            && point.line >= this.top && point.line <= this.bottom
+        let onHorizontalEdges = (point.line == this.top || point.line == this.bottom)
+            && point.column >= this.left && point.column <= this.right
         return onVerticalEdges || onHorizontalEdges
     }
 
     get left() {
-        return this.offsets.left
+        return this.offsets.left + 1
     }
 
     get top() {
-        return this.offsets.top
+        return this.offsets.top + 1
     }
 
     get right() {
-        return this.offsets.left + this.dimensions.width - 1
+        return this.offsets.left + this.dimensions.width
     }
 
     get bottom() {
-        return this.offsets.top + this.dimensions.height - 1
+        return this.offsets.top + this.dimensions.height
     }
 }
