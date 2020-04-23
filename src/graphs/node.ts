@@ -31,10 +31,10 @@ export class Node {
     }
 
     get right() {
-        return this.offsets.left + this.dimensions.width
+        return this.offsets.left + this.dimensions.width - 1
     }
 
     get bottom() {
-        return this.offsets.top + this.dimensions.height
+        return this.offsets.top + this.dimensions.height - 1
     }
 }

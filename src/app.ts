@@ -9,9 +9,13 @@ let x = new Node(new Content('Title', 'Text'))
 x.offsets = new Offsets(1, 2)
 x.dimensions = new Dimensions(3, 4)
 
+let y = new Node(new Content('Title 2', 'Text 2'))
+y.dimensions = new Dimensions(1, 2)
+
 let g = new Graph()
 g.dimensions = new Dimensions(10, 10)
 g.nodes.push(x)
+g.nodes.push(y)
 
 let f = new ConsolePrinter()
 f.print(g)
