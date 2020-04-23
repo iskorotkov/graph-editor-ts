@@ -12,7 +12,7 @@ export class ConsolePrinter {
     );
     this.validate(graph);
     ConsolePrinter.gatherInfo(graph, matrix);
-    ConsolePrinter.printNodes(graph, matrix);
+    ConsolePrinter.printNodes(matrix);
   }
 
   private validate(graph: Graph) {
@@ -56,5 +56,42 @@ export class ConsolePrinter {
     }
   }
 
-  private static printNodes(graph: Graph, matrix: OutputMatrix) {}
+  private static printNodes(matrix: OutputMatrix) {
+    for (let line = 0; line < matrix.height; line++) {
+      let str = "";
+
+      for (let column = 0; column < matrix.width; column++) {
+        let position = new Position(line, column);
+        let elem = matrix.get(position);
+
+        if (elem) {
+          if (elem.isEdge) {
+            str += "*";
+          } else {
+            if (elem.offsetsInNode.top == 1) {
+              let index = elem.offsetsInNode.left - 1;
+              if (elem.node.content.title.length > index) {
+                str += elem.node.content.title[index];
+              } else {
+                str += ".";
+              }
+            } else {
+              let index =
+                (elem.offsetsInNode.top - 2) * (elem.node.dimensions.width - 2);
+              index += elem.offsetsInNode.left - 1;
+              if (elem.node.content.text.length > index) {
+                str += elem.node.content.text[index];
+              } else {
+                str += ".";
+              }
+            }
+          }
+        } else {
+          str += "_";
+        }
+      }
+
+      console.log(str);
+    }
+  }
 }
