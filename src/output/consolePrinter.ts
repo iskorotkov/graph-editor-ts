@@ -66,14 +66,14 @@ export class ConsolePrinter {
 
         if (elem) {
           if (elem.isEdge) {
-            str += '*'
+            str += this.edgeToStr(elem)
           } else {
             if (elem.offsetsInNode.top === 1) {
               const index = elem.offsetsInNode.left - 1
               if (elem.node.content.title.length > index) {
                 str += elem.node.content.title[index]
               } else {
-                str += '.'
+                str += ' '
               }
             } else {
               let index =
@@ -82,16 +82,27 @@ export class ConsolePrinter {
               if (elem.node.content.text.length > index) {
                 str += elem.node.content.text[index]
               } else {
-                str += '.'
+                str += ' '
               }
             }
           }
         } else {
-          str += '_'
+          str += ' '
         }
       }
 
       console.log(str)
     }
+  }
+
+  private static edgeToStr (elem: OutputInfo) {
+    const offsets = elem.offsetsInNode
+    if (offsets.top === 0 || offsets.bottom === 0) {
+      if (offsets.left === 0 || offsets.right === 0) {
+        return '+'
+      }
+      return '-'
+    }
+    return '|'
   }
 }
