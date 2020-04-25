@@ -4,6 +4,14 @@ import { Offsets } from './offsets'
 import { OutputInfo } from './outputInfo'
 import { OutputMatrix } from './outputMatrix'
 
+enum OutputChar {
+  Corner = '+',
+  VerticalEdge = '|',
+  HorizontalEdge = '-',
+  EmptySpaceOutside = ' ',
+  EmptySpaceInside = ' '
+}
+
 export class ConsolePrinter {
   print (graph: Graph) {
     const matrix = new OutputMatrix(
@@ -73,7 +81,7 @@ export class ConsolePrinter {
               if (elem.node.content.title.length > index) {
                 str += elem.node.content.title[index]
               } else {
-                str += ' '
+                str += OutputChar.EmptySpaceInside
               }
             } else {
               let index =
@@ -82,12 +90,12 @@ export class ConsolePrinter {
               if (elem.node.content.text.length > index) {
                 str += elem.node.content.text[index]
               } else {
-                str += ' '
+                str += OutputChar.EmptySpaceInside
               }
             }
           }
         } else {
-          str += ' '
+          str += OutputChar.EmptySpaceOutside
         }
       }
 
@@ -99,10 +107,10 @@ export class ConsolePrinter {
     const offsets = elem.offsetsInNode
     if (offsets.top === 0 || offsets.bottom === 0) {
       if (offsets.left === 0 || offsets.right === 0) {
-        return '+'
+        return OutputChar.Corner
       }
-      return '-'
+      return OutputChar.HorizontalEdge
     }
-    return '|'
+    return OutputChar.VerticalEdge
   }
 }
