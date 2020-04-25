@@ -19,8 +19,8 @@ export class ConsolePrinter {
       graph.dimensions.width
     )
     this.validate(graph)
-    ConsolePrinter.gatherInfo(graph, matrix)
-    ConsolePrinter.printNodes(matrix)
+    this.gatherInfo(graph, matrix)
+    this.printNodes(matrix)
   }
 
   private validate (graph: Graph) {
@@ -36,7 +36,7 @@ export class ConsolePrinter {
     }
   }
 
-  private static gatherInfo (graph: Graph, matrix: OutputMatrix) {
+  private gatherInfo (graph: Graph, matrix: OutputMatrix) {
     for (const node of graph.nodes) {
       const width = node.dimensions.width
       const height = node.dimensions.height
@@ -46,16 +46,18 @@ export class ConsolePrinter {
           const canvasColumn = node.left + nodeColumn
 
           const position = new Position(canvasLine, canvasColumn)
+          const offsets = new Offsets(
+            nodeColumn,
+            nodeLine,
+            width - nodeColumn - 1,
+            height - nodeLine - 1
+          )
+
           const info = new OutputInfo(
             node,
             node.onEdge(position),
             position,
-            new Offsets(
-              nodeColumn,
-              nodeLine,
-              width - nodeColumn - 1,
-              height - nodeLine - 1
-            )
+            offsets
           )
 
           matrix.set(info, position)
@@ -64,7 +66,7 @@ export class ConsolePrinter {
     }
   }
 
-  private static printNodes (matrix: OutputMatrix) {
+  private printNodes (matrix: OutputMatrix) {
     for (let line = 0; line < matrix.height; line++) {
       let str = ''
 
@@ -74,25 +76,9 @@ export class ConsolePrinter {
 
         if (elem) {
           if (elem.isEdge) {
-            str += this.edgeToStr(elem)
+            str += this.writeEdge(elem)
           } else {
-            if (elem.offsetsInNode.top === 1) {
-              const index = elem.offsetsInNode.left - 1
-              if (elem.node.content.title.length > index) {
-                str += elem.node.content.title[index]
-              } else {
-                str += OutputChar.EmptySpaceInside
-              }
-            } else {
-              let index =
-                (elem.offsetsInNode.top - 2) * (elem.node.dimensions.width - 2)
-              index += elem.offsetsInNode.left - 1
-              if (elem.node.content.text.length > index) {
-                str += elem.node.content.text[index]
-              } else {
-                str += OutputChar.EmptySpaceInside
-              }
-            }
+            str = this.writeNodeContent(elem, str)
           }
         } else {
           str += OutputChar.EmptySpaceOutside
@@ -103,7 +89,37 @@ export class ConsolePrinter {
     }
   }
 
-  private static edgeToStr (elem: OutputInfo) {
+  private writeNodeContent (elem: OutputInfo, str: string) {
+    if (elem.offsetsInNode.top === 1) {
+      str = this.writeHeader(elem, str)
+    } else {
+      str = this.writeContentText(elem, str)
+    }
+    return str
+  }
+
+  private writeContentText (elem: OutputInfo, str: string) {
+    let index = (elem.offsetsInNode.top - 2) * (elem.node.dimensions.width - 2)
+    index += elem.offsetsInNode.left - 1
+    if (elem.node.content.text.length > index) {
+      str += elem.node.content.text[index]
+    } else {
+      str += OutputChar.EmptySpaceInside
+    }
+    return str
+  }
+
+  private writeHeader (elem: OutputInfo, str: string) {
+    const index = elem.offsetsInNode.left - 1
+    if (elem.node.content.title.length > index) {
+      str += elem.node.content.title[index]
+    } else {
+      str += OutputChar.EmptySpaceInside
+    }
+    return str
+  }
+
+  private writeEdge (elem: OutputInfo) {
     const offsets = elem.offsetsInNode
     if (offsets.top === 0 || offsets.bottom === 0) {
       if (offsets.left === 0 || offsets.right === 0) {
